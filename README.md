@@ -5,7 +5,7 @@
 
 ## 構成
 
-## メモ
+## 自分用メモ
 
 ### 本講座で作成するもの
 - 以下の4つから構成される
@@ -49,3 +49,33 @@
 - クライアントが利用するインターフェースを必要な機能だけに限定する原則
 #### (Dependency Inversion Principle)(依存関係逆転の原則)
 - 上位モジュールが下位モジュールに依存すべきではなく、抽象化に依存するべきであるという原則
+
+### gormの外部キー制約
+- https://gorm.io/ja_JP/docs/constraints.html
+```go
+type User struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Email     string    `json:"email" gorm:"unique"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+type Task struct {
+	ID        uint      `json:"id" gorm:"primaryKey"`
+	Title     string    `json:"title" gorm:"not null"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	User      User      `json:"user" gorm:"foreignKey:UserId; constraint:OnDelete:CASCADE"`
+	UserId    uint      `json:"user_id" gorm:"not null"`
+}
+```
+- `gorm:"foreignKey:UserId; constraint:OnDelete:CASCADE"`とすることで、Userが削除されたときにそのUserに紐づくTaskをすべて削除することができる
+
+### マイグレーション
+- gormでは`*gorm.DB`に`AutoMigrate`というメソッドが用意されていて引数に構造体のポインタを渡すことでtableを作成できる
+```go
+dbConn := db.NewDB()
+dbConn.AutoMigrate(&model.User{}, &model.Task{}) // user, taskテーブル作成
+```
+- 今回は`GO_ENV=dev go run migrate/migrate.go`で実行
+  - `GO_ENV=dev`はdb.goでGO_ENVがdevなら環境変数をすべて読み込むという実装にしているのでGO_ENVだけは渡してあげる必要がある
