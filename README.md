@@ -88,3 +88,21 @@ dbConn.AutoMigrate(&model.User{}, &model.Task{}) // user, taskテーブル作成
 - それぞれはBase64でエンコードされていて、`.`で結合されている
 
 ### cookie
+- 作成方法は以下の3段階
+  - `new(http.Cookie)`で作成
+  - attributesに値をassign
+  - `c.SetCookie(作成した変数)`でHTTPレスポンスヘッダのSet-Cookieに追加される
+```go
+// cookie作成
+cookie := new(http.Cookie)
+cookie.Name = "token"
+cookie.Value = tokenString
+cookie.Expires = time.Now().Add(24 * time.Hour)
+cookie.Path = "/"
+cookie.Domain = os.Getenv("API_DOMAIN")
+cookie.Secure = true
+cookie.HttpOnly = true
+cookie.SameSite = http.SameSiteNoneMode
+c.SetCookie(cookie)
+return c.NoContent(http.StatusOK)
+```

@@ -3,6 +3,8 @@ package controller
 import (
 	"go-rest-api/usecase"
 	"net/http"
+	"os"
+	"time"
 
 	"go-rest-api/model"
 
@@ -45,6 +47,16 @@ func (uc *userController) LogIn(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	/*ここからcookie*/
+	cookie := new(http.Cookie)
+	cookie.Name = "token"
+	cookie.Value = tokenString
+	cookie.Expires = time.Now().Add(24 * time.Hour)
+	cookie.Path = "/"
+	cookie.Domain = os.Getenv("API_DOMAIN")
+	// cookie.Secure = true
+	cookie.HttpOnly = true
+	cookie.SameSite = http.SameSiteNoneMode
+	c.SetCookie(cookie)
+	return c.NoContent(http.StatusOK)
 }
 func (uc *userController) LogOut(c echo.Context) error
