@@ -86,3 +86,5 @@ dbConn.AutoMigrate(&model.User{}, &model.Task{}) // user, taskテーブル作成
 - 認証用のトークンなどで利用される
 - ヘッダ、ペイロード、署名の3つから成る
 - それぞれはBase64でエンコードされていて、`.`で結合されている
+
+### cookie
