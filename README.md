@@ -29,7 +29,7 @@
   - router -> controller -> usecase -> repository -> (DB)
 ### Clean Architecture
 - https://www.youtube.com/watch?v=BvzjpAe3d4g&t=7s
-#### Dependancy Inversion Principle(依存関係逆転の原則)
+#### Dependency Inversion Principle(依存関係逆転の原則)
 - higher layerがlower layerに依存しているとき(clean architectureの図で内側から外側に依存があるとき)にそれを解消する方法
 - 外側のモジュールのインターフェースを内側に実装して、内側のモジュールの依存先をインターフェースに変更するというもの
 
@@ -79,3 +79,10 @@ dbConn.AutoMigrate(&model.User{}, &model.Task{}) // user, taskテーブル作成
 ```
 - 今回は`GO_ENV=dev go run migrate/migrate.go`で実行
   - `GO_ENV=dev`はdb.goでGO_ENVがdevなら環境変数をすべて読み込むという実装にしているのでGO_ENVだけは渡してあげる必要がある
+
+### JWT
+- JSON Web Tokenの略
+- 電子署名により改ざん検知できる
+- 認証用のトークンなどで利用される
+- ヘッダ、ペイロード、署名の3つから成る
+- それぞれはBase64でエンコードされていて、`.`で結合されている
