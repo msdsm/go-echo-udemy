@@ -120,6 +120,21 @@ t.Use(echojwt.WithConfig(echojwt.Config{
 - `SigningKey`にJWTを生成したときと同じsecret keyを指定
 - `TokenLookup`でクライアントから送られてくるJWT tokenがどこにあるかを指定
 
+### ozzo-validation
+- validationを楽にかける外部module
+```go
+func (tv *taskValidator) TaskValidate(task model.Task) error {
+	return validation.ValidateStruct(&task,
+		validation.Field(
+			&task.Title,
+			validation.Required.Error("title is required"),
+			validation.RuneLength(1, 10).Error("limited max 10 char"),
+		),
+	)
+}
+```
+- 上の例では、task.Titleが存在するかどうか、長さが1以上10以下かどうかをvalidateしている
+
 ### バグ一覧
 #### interface conversion: interface {} is *jwt.Token, not *jwt.Token (types from different packages)
 - `user := c.Get("user").(*jwt.Token)`
