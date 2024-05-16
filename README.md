@@ -135,6 +135,37 @@ func (tv *taskValidator) TaskValidate(task model.Task) error {
 ```
 - 上の例では、task.Titleが存在するかどうか、長さが1以上10以下かどうかをvalidateしている
 
+### CORS
+- Cross Origin Resource Sharing
+- 異なるオリジンからのアクセスを許可できる仕組み
+- echoでの利用例は以下
+```go
+e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+	AllowOrigins: []string{"http://localhost:3000", os.Getenv("FE_URL")},
+	AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept,
+		echo.HeaderAccessControlAllowHeaders, echo.HeaderXCSRFToken},
+	AllowMethods:     []string{"GET", "PUT", "POST", "DELETE"},
+	AllowCredentials: true, // cookieの送受信を可能にする
+}))
+```
+- stringのスライスでOrigin, Header, Methodを複数許可する
+
+### CSRF
+- Webアプリケーションが偽装された(本来送信されるべきでない)リクエストを正規のものとして受信してしまう脆弱性、または攻撃手法のこと
+- 対策としてはトークンを利用するというものがある
+  - CSRFを利用したトークンを持っていないリクエストをブロックするとうこと
+- echoでの利用例は以下
+```go
+e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
+	CookiePath:     "/",
+	CookieDomain:   os.Getenv("API_DOMAIN"),
+	CookieHTTPOnly: true,
+	//CookieSameSite: http.SameSiteNoneMode,
+	CookieSameSite: http.SameSiteDefaultMode, // secure modeをfalseにしないとpostmanで動作確認できないから
+	//CookieMaxAge: 60,
+}))
+```
+
 ### バグ一覧
 #### interface conversion: interface {} is *jwt.Token, not *jwt.Token (types from different packages)
 - `user := c.Get("user").(*jwt.Token)`
