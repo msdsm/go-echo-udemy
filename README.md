@@ -86,6 +86,7 @@ dbConn.AutoMigrate(&model.User{}, &model.Task{}) // user, taskテーブル作成
 - 認証用のトークンなどで利用される
 - ヘッダ、ペイロード、署名の3つから成る
 - それぞれはBase64でエンコードされていて、`.`で結合されている
+- https://iketechblog.com/go-jwt/
 
 ### cookie
 - 作成方法は以下の3段階
@@ -106,3 +107,23 @@ cookie.SameSite = http.SameSiteNoneMode
 c.SetCookie(cookie)
 return c.NoContent(http.StatusOK)
 ```
+
+### echo jwt
+- https://echo.labstack.com/docs/middleware/jwt
+```go
+// middleware
+t.Use(echojwt.WithConfig(echojwt.Config{
+	SigningKey:  []byte(os.Getenv("SECRET")),
+	TokenLookup: "cookie:token",
+}))
+```
+- `SigningKey`にJWTを生成したときと同じsecret keyを指定
+- `TokenLookup`でクライアントから送られてくるJWT tokenがどこにあるかを指定
+
+### バグ一覧
+#### interface conversion: interface {} is *jwt.Token, not *jwt.Token (types from different packages)
+- `user := c.Get("user").(*jwt.Token)`
+- https://github.com/dgrijalva/jwt-go/issues/401
+- jwtのversionの問題
+- go.modでjwt/v4に変更して、importをすべてjwt/v4に変更
+- できた
