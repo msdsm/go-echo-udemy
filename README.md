@@ -5,7 +5,7 @@
 
 ## 構成
 
-## 自分用メモ
+## 自分用メモ(Go)
 
 ### 本講座で作成するもの
 - 以下の4つから構成される
@@ -173,3 +173,34 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 - jwtのversionの問題
 - go.modでjwt/v4に変更して、importをすべてjwt/v4に変更
 - できた
+
+## 自分用メモ(React)
+### プロジェクト作成方法
+- `npx create-react-app react-todo --template typescript --use-npm`
+  - `create-react-app`の後に任意のプロジェクト名
+  - `template`の後にjavascriptかtypescriptを指定
+### prettier
+- コードフォーマッターの一種
+- `npm install --save-dev prettier`でインストール可能
+- vscodeの拡張機能でも利用可能
+- JavaScript, TypeScript, HTML, CSSなどの言語をサポート
+- コードフォーマットのルール設定は`.prettierrc`に記述
+- 指定ファイルやディレクトリを無視する設定は`.prettierignore`に記述
+### .prettierrc
+- 以下設定例
+```json
+{
+	"singleQuote": true, // シングルクォートを使用するかどうか。false の場合、ダブルクォートを使用
+	"semi": true, // 文末にセミコロンを自動挿入するかどうか
+}
+```
+- 他は以下参照
+- [qiita](https://qiita.com/kkrtech/items/6416517f04347b980f8e#:~:text=prettierrc%20%E3%83%95%E3%82%A1%E3%82%A4%E3%83%AB%E3%81%AF%E3%80%81%E3%82%B3%E3%83%BC%E3%83%89%E3%83%95%E3%82%A9%E3%83%BC%E3%83%9E%E3%83%83%E3%83%88,%E8%A1%8C%E3%81%86%E3%81%93%E3%81%A8%E3%81%8C%E3%81%A7%E3%81%8D%E3%81%BE%E3%81%99%E3%80%82)
+
+
+### tailwind CSS
+- オープンソースのCSSフレームワークの1種
+- Bootstrapとの違いとしては、ボタンやテーブルなどの要素に対する一連の定義済みクラスを提供しない点
+
+### ローカル実行方法
+- `npm start`
