@@ -211,3 +211,13 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 - `create`メソッドを使うことで状態管理のストアを作成可能
   - `get()`でstoreの値を参照
   - `set()`で状態を更新
+
+### tanstack query
+- 以下の3つで使える
+  - データフェッチ
+  - 取得データのキャッシュ
+  - 効率的な非同期状態の管理
+- https://zenn.dev/taisei_13046/books/133e9995b6aadf/viewer/2ce93a
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
