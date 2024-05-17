@@ -19,7 +19,7 @@ const useStore = create<State>((set) => ({
         set({
             editedTask: payload,
         }),
-        resetEditedTask: () => set({ editedTask: {id: 0, title: ''} }),
+    resetEditedTask: () => set({ editedTask: {id: 0, title: ''} }),
 }))
 
 export default useStore
