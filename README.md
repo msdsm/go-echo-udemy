@@ -204,3 +204,10 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 
 ### ローカル実行方法
 - `npm start`
+### zustand
+- reactの状態管理ライブラリ
+- 小さくシンプルに管理できる
+- アプリケーション全体にアクセスできるグローバルステートの管理も可能
+- `create`メソッドを使うことで状態管理のストアを作成可能
+  - `get()`でstoreの値を参照
+  - `set()`で状態を更新
