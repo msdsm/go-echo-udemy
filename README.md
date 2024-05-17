@@ -4,6 +4,8 @@
 - https://www.udemy.com/course/echo-go-react-restapi/learn/lecture/36949722?start=0#overview
 
 ## 構成
+- go-rest-api : `GO=ENV=dev go run main.go`で実行
+- react-todo : `npm start`で実行
 
 ## 自分用メモ(Go)
 
@@ -219,5 +221,5 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
   - 効率的な非同期状態の管理
 - https://zenn.dev/taisei_13046/books/133e9995b6aadf/viewer/2ce93a
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+### axios
+- クライアントからapiたたくのに便利
