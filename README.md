@@ -213,23 +213,47 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 - `create`メソッドを使うことで状態管理のストアを作成可能
   - `get()`でstoreの値を参照
   - `set()`で状態を更新
+- 簡単な例だと以下
+```tsx
+import { create } from 'zustand'
 
-### tanstack query
-- 以下の3つで使える
-  - データフェッチ
-  - 取得データのキャッシュ
-  - 効率的な非同期状態の管理
-- https://zenn.dev/taisei_13046/books/133e9995b6aadf/viewer/2ce93a
+// stateの定義と更新ロジックを含むストアを作成。
+const useStore = create(set => ({
+  count: 0,
+  increase: () => set(state => ({ count: state.count + 1 })),
+  decrease: () => set(state => ({ count: state.count - 1 }))
+}))
+
+// ストアをコンポーネントで使用
+function Counter() {
+  const { count, increase, decrease } = useStore()
+  return (
+    <div>
+      <button onClick={decrease}>-</button>
+      <span>{count}</span>
+      <button onClick={increase}>+</button>
+    </div>
+  )
+}
+```
+- 今回はstore/index.tsで使用
+
+### Omit
+- `Omit<T,K>`で既に存在するT型の中からKで選択したプロパティを除いた新しい型を構築できる
+- 今回の例は以下
+```tsx
+(task: Omit<Task, 'id' | 'created_at' | 'updated_at'>)
+(task: Omit<Task, 'created_at' | 'updated_at'>)
+```
+- 1つ目はTask型からid,created_at,updated_atを除いたもの、つまりtitleのみ
+- 2つ目はidとtitleから成る新しい型
 
 ### axios
-- クライアントからapiたたくのに便利
+- `axios.get(...)`や`axios.post(...)`などで簡単にapiたたける
 
 ### todo
-- zustand詳しくのせる
 - tanstack query, react queryについて詳しくのせる
 - use系すべて(useStateから)のせる
-- axiosもう少し詳しく
-- Omit
 - mutationのres, variablesの謎
   - useMutationの第一引数の関数の引数がvariables
   - 第一引数の関数の引数を第二引数で与える各レスポンスに対する処理で使えて便利という話をうまく言語化してまとめる
@@ -237,3 +261,88 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
     - https://tanstack.com/query/v4/docs/framework/react/reference/useMutation
     - 公式サイトから第二引数の呼び方探す
 - react dev tool
+
+### tanstack query
+- 以下の3つで使える
+  - データフェッチ
+  - 取得データのキャッシュ
+  - 効率的な非同期状態の管理
+- https://zenn.dev/taisei_13046/books/133e9995b6aadf/viewer/2ce93a
+#### useQuery
+#### useMutation
+
+### フック
+https://zenn.dev/enumura/books/a882cb41219318/viewer/eb659f
+#### useState
+- 状態を管理、更新するための機能
+- 以下のように宣言する
+```tsx
+const [状態変数 状態変数を更新するための関数] = useState(状態変数の初期値)
+```
+- 使用例として、ボタンがクリックされるたびにカウントアップするコードが以下
+```tsx
+import { useState } from 'react'; // import
+
+function Countup() {
+  const [countedNumber, setCount] = useState(0); // 宣言(countedNumberが状態変数、setCountが関数)
+  
+  // onClickでボタンが押されるたびにsetCountを使ってcounterNumberの値をcounterNumber+1に更新
+  return (
+    <div>
+      <p>Count: {countedNumber}</p>
+      <button onClick={() => setCount(countedNumber + 1)}>Increment</button>
+    </div>
+  );
+}
+
+export default Countup;
+```
+#### useEffect
+- コンポーネントが画面に描画された後、またはコンポーネントの更新後に関数を実行するHooks
+- コンポーネントのレンダリング後にuseEffectの第一引数に渡した関数の実行をおこなう
+- 第二引数で変化を監視する対象の状態変数を配列として複数定義できる
+- この配列が空の場合は初回レンダリング時にuseEffectの第一引数の関数が走る
+- 使用方法は以下
+```tsx
+// 第一引数:関数, 第二引数:配列
+useEffect(() => {
+  // 副作用として実行する処理の中身を記述
+}, [副作用関数の実行タイミングを制御する依存配列])
+```
+- 使用例としてカウンターの値が変化したときにメッセージを表示するものが以下
+  - これはcountの値が変わるたび(クリックされるたび)にその値をコンソールに出力するというもの
+```tsx
+import React, { useState, useEffect } from 'react'; // import
+
+function Counter() {
+  const [count, setCount] = useState(0); // useStateを利用して状態変数と更新関数作成
+
+  // useEffect定義
+  // 第一引数:countの中身をログ出力するという関数
+  // 第二引数:状態変数であるcountだけを格納した配列
+  useEffect(() => {
+    console.log(`countの値: ${count}`);
+  }, [count]);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+
+export default Counter;
+```
+- 以下は初回レンダリング後に一度だけ実行する例
+```tsx
+// 第二引数を空の配列にすることで初回レンダリング後に実行させられる
+useEffect(() => {
+  console.log(`hoge`);
+}, []);
+```
+### useContext
+#### useRef
+#### カスタムフック
+
+### React dev tool
