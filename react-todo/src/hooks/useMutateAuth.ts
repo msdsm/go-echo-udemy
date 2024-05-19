@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 import { useMutation } from '@tanstack/react-query'
 import useStore from '../store'
 import { Credential } from '../types'
-import { useError } from '../hooks/useError'
+import { useError } from './useError'
 import axios from 'axios'
 
 export const useMutateAuth = () => {
