@@ -1,5 +1,51 @@
 # Udemy(Echo/Go + Reactで始めるモダンWebアプリケーション開発)
 
+## 目次
+- [Udemy(Echo/Go + Reactで始めるモダンWebアプリケーション開発)](#udemyechogo--reactで始めるモダンwebアプリケーション開発)
+  - [目次](#目次)
+  - [ソース](#ソース)
+  - [構成](#構成)
+  - [自分用メモ(Go)](#自分用メモgo)
+    - [本講座で作成するもの](#本講座で作成するもの)
+    - [Clean Architecture](#clean-architecture)
+      - [Dependency Inversion Principle(依存関係逆転の原則)](#dependency-inversion-principle依存関係逆転の原則)
+      - [Encapsulation(隠蔽)](#encapsulation隠蔽)
+    - [SOLID原則](#solid原則)
+      - [Single Responsibility Principle(単一責任の原則)](#single-responsibility-principle単一責任の原則)
+      - [Open-Closed Principle(オープン・クローズドの原則)](#open-closed-principleオープンクローズドの原則)
+      - [Liskov Substitution Principle(リスコフの置換原則)](#liskov-substitution-principleリスコフの置換原則)
+      - [Interface Segregation Principle(インターフェース分離の原則)](#interface-segregation-principleインターフェース分離の原則)
+      - [(Dependency Inversion Principle)(依存関係逆転の原則)](#dependency-inversion-principle依存関係逆転の原則-1)
+    - [gormの外部キー制約](#gormの外部キー制約)
+    - [マイグレーション](#マイグレーション)
+    - [JWT](#jwt)
+    - [cookie](#cookie)
+    - [echo jwt](#echo-jwt)
+    - [ozzo-validation](#ozzo-validation)
+    - [CORS](#cors)
+    - [CSRF](#csrf)
+    - [バグ一覧](#バグ一覧)
+      - [interface conversion: interface {} is \*jwt.Token, not \*jwt.Token (types from different packages)](#interface-conversion-interface--is-jwttoken-not-jwttoken-types-from-different-packages)
+  - [自分用メモ(React)](#自分用メモreact)
+    - [プロジェクト作成方法](#プロジェクト作成方法)
+    - [prettier](#prettier)
+    - [.prettierrc](#prettierrc)
+    - [tailwind CSS](#tailwind-css)
+    - [ローカル実行方法](#ローカル実行方法)
+    - [zustand](#zustand)
+    - [Omit](#omit)
+    - [axios](#axios)
+    - [フック](#フック)
+      - [useState](#usestate)
+      - [useEffect](#useeffect)
+    - [useContext](#usecontext)
+      - [useRef](#useref)
+      - [カスタムフック](#カスタムフック)
+    - [TanStack Query](#tanstack-query)
+      - [useQuery](#usequery)
+      - [useMutation](#usemutation)
+    - [React developer tools](#react-developer-tools)
+
 ## ソース
 - https://www.udemy.com/course/echo-go-react-restapi/learn/lecture/36949722?start=0#overview
 
@@ -251,26 +297,6 @@ function Counter() {
 ### axios
 - `axios.get(...)`や`axios.post(...)`などで簡単にapiたたける
 
-### todo
-- tanstack query, react queryについて詳しくのせる
-- use系すべて(useStateから)のせる
-- mutationのres, variablesの謎
-  - useMutationの第一引数の関数の引数がvariables
-  - 第一引数の関数の引数を第二引数で与える各レスポンスに対する処理で使えて便利という話をうまく言語化してまとめる
-    - 今回のコードのupdate, deleteを例にかく
-    - https://tanstack.com/query/v4/docs/framework/react/reference/useMutation
-    - 公式サイトから第二引数の呼び方探す
-- react dev tool
-
-### tanstack query
-- 以下の3つで使える
-  - データフェッチ
-  - 取得データのキャッシュ
-  - 効率的な非同期状態の管理
-- https://zenn.dev/taisei_13046/books/133e9995b6aadf/viewer/2ce93a
-#### useQuery
-#### useMutation
-
 ### フック
 https://zenn.dev/enumura/books/a882cb41219318/viewer/eb659f
 #### useState
@@ -342,7 +368,217 @@ useEffect(() => {
 }, []);
 ```
 ### useContext
-#### useRef
-#### カスタムフック
+- コンポーネント間でデータを共有するために使用する
+- propsでは親から子コンポーネントにデータを渡すのに対して、useContextでは子のさらにその子などに直接わたすことができる
+- propsの場合だと親が子の子にデータを渡すときにpropsを与えるというのが2回発生してしまうため、このような場合にuseContextが便利
+- データを構造体の形で定義して`createContext()`の引数に与えることでcontextの作成ができる
+- 作成したContextのProviderコンポーネントで対象コンポーネントを囲んで値を渡す
+- 値を受け取る側は`useContext()`を用いてデータの取り出しが可能
+- 以下例
+```tsx
+// index.js
+import React, { createContext } from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-### React dev tool
+// 共有するデータ
+const hogeData = {
+  fruits: 'grape',
+  drink: 'water'
+}
+
+// Contextの作成
+const HogeContext = createContext(hogeData); // 引数にデータ渡す
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // プロバイダー ここでデータ渡す
+  <HogeContext.Provider value={hogeData}>
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>
+  </HogeContext.Provider>
+);
+
+// 外部からアクセスできるようにする
+export default HogeContext;
+```
+
+```tsx
+// App.js
+import { useContext } from 'react';
+
+// Contextのインポート
+import HogeContext from '.';
+
+function App() {
+  const hogeData = useContext(HogeContext); // これでデータ取り出せる
+
+  // 構造体として値を取り出せる
+  return (
+    <div className="App">
+      <h1>{hogeData.fruits}</h1>
+      <h1>{hogeData.drink}</h1>
+    </div>
+  );
+}
+
+export default App;
+```
+#### useRef
+- 要素の参照をするためのフック
+- 値を保持することができるが、useStateとは異なり再レンダリングをしない
+- 宣言方法は以下のように`useRef()`に初期値を与えて状態変数を作成
+```tsx
+const hoge = useRef(初期値)
+```
+- 以下、例としてクリックされたときに入力値を出力するもの
+  - useRefを使うことで変更した値を常に反映させられているが、再レンダリングはされない
+```tsx
+import { useRef } from 'react';
+
+function App() {
+  const inputRef = useRef(null); // 宣言
+
+  const outPutInputValue = () => {
+    console.log(inputRef.current.value);
+  };
+
+  return (
+    <div>
+      <input ref={inputRef} type="text" />
+      <button onClick={outPutInputValue}>入力値出力ボタン</button>
+    </div>
+  );
+}
+
+export default App;
+```
+#### カスタムフック
+- 名前がuseで始まり次に大文字がくるような命名法によってオリジナルのフックを作成できる
+- 今回のコードではhooksディレクトリにあるものが全てカスタムフック
+- カスタムフックの利点は複数のReactHooksをまとめられること
+
+
+### TanStack Query
+- 以下の3つで使える
+  - データフェッチ
+  - 取得データのキャッシュ
+  - 効率的な非同期状態の管理
+#### useQuery
+- 公式ドキュメント
+  - https://tanstack.com/query/v5/docs/framework/react/reference/useQuery
+- 最低限の使い方としては以下のようにqueryKeyにキャッシュ識別のためのkey, queryFnにデータフェッチのための非同期関数を渡すだけ
+  - useQueryではフェッチしたデータをクライアントにキャッシュとして保存できる
+```tsx
+const { data, isPending } = useQuery({
+  queryKey: ["issues"],
+  queryFn: () => axios.get("/issues").then(res => res.data)
+})
+```
+- 代表的な引数は以下
+  - queryKey : 必須、キャッシュを識別するためのもの
+  - queryFn : Promiseを返す関数をわたす
+  - enabled : これがfalseの場合はクエリが実行されない
+  - staleTime : キャッシュをstale状態にするまでの時間
+- 代表的な返り値は以下
+  - data : クエリの結果
+  - error : クエリ実行時に発生したエラーオブジェクト
+  - isLoading : statusがpendingでありかつフェエッチが実行されている状態
+#### useMutation
+- useQueryがデータ取得のためのAPIだったのに対して、useMutationはデータの更新に使う
+  - CRUDのうちCUD
+- useQueryが宣言的であるのに対してuseMutationは命令的
+  - `useMutation`の返り値である`mutate()`関数で実行させる
+```tsx
+const mutation = useMutation({
+    mutationFn: (newTodo) => {
+      return axios.post('/todos', newTodo)
+    },
+  })
+```
+- 必須引数はmutationFnのみで、これに非同期関数を渡す
+- 他の重要なオプションは以下
+  - onSuccess : mutationが成功した際に発火するコールバック関数
+  - onError : mutationが失敗した際に発火するコールバック関数
+- また、onErrorやonSuccessの引数にmutationFnの引数をvariablesとして渡せる
+- 今回のコードの使用例は以下
+  - updateMutationのonSuccessでは(res,variables)を渡しているがvariablesはmutationFnの引数であるidとtitleから成る構造体
+    - そのためその以降でvariables.idとしてアクセスしている
+  - deleteMutationのonSuccessの(res, variables)ではmutationFnの引数がid : numberであるためnumber型の変数
+    - そのためその以降で`task.id !== variables`のようにvariablesでidにアクセスできる
+```tsx
+const createTaskMutation = useMutation(
+    (task: Omit<Task, 'id' | 'created_at' | 'updated_at'>) =>
+        axios.post<Task>(`${process.env.REACT_APP_API_URL}/tasks`, task),
+    {
+        onSuccess: (res) => {
+            const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+            if (previousTasks) {
+                queryClient.setQueryData(['tasks'], [...previousTasks, res.data])
+            }
+            resetEditedTask()
+        },
+        onError: (err: any) => {
+            if (err.response.data.message) {
+                switchErrorHandling(err.response.data.message)
+            } else {
+                switchErrorHandling(err.response.data)
+            }
+        },
+    }
+)
+const updateTaskMutation = useMutation(
+    (task: Omit<Task, 'created_at' | 'updated_at'>) =>
+        axios.put<Task>(`${process.env.REACT_APP_API_URL}/tasks/${task.id}`, {
+            title: task.title,
+        }),
+    {
+        onSuccess: (res, variables) => {
+            const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+            if (previousTasks) {
+                queryClient.setQueryData<Task[]>(
+                    ['tasks'],
+                    previousTasks.map((task) =>
+                    task.id === variables.id ? res.data : task
+                    )   
+                )
+            }
+            resetEditedTask()
+        },
+        onError: (err: any) => {
+            if (err.response.data.message) {
+                switchErrorHandling(err.response.data.message)
+            } else {
+                switchErrorHandling(err.response.data)
+            }
+        },
+    }
+)
+const deleteTaskMutation = useMutation(
+    (id: number) => 
+        axios.delete(`${process.env.REACT_APP_API_URL}/tasks/${id}`),
+    {
+        onSuccess: (_, variables) => {
+            const previousTasks = queryClient.getQueryData<Task[]>(['tasks'])
+            if (previousTasks) {
+                queryClient.setQueryData<Task[]>(
+                    ['tasks'],
+                    previousTasks.filter((task) => task.id !== variables)
+                )
+            }
+            resetEditedTask()
+        },
+        onError: (err: any) => {
+            if (err.response.data.message) {
+                switchErrorHandling(err.response.data.message)
+            } else {
+                switchErrorHandling(err.response.data)
+            }
+        },
+    }
+)
+```
+- このようにCRUDのうちのCRDの非同期APIを叩くということと、そのレスポンス時に合わせて実行させるものを1つの関数でかけるので非常に便利
+### React developer tools
+- 公式のReact用のデバッグツール
