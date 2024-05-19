@@ -16,7 +16,7 @@ function App() {
       axios.defaults.headers.common['X-CSRF-Token'] = data.csrf_token
     }
     getCsrfToken()
-  }, [])
+  }, []) // 第二引数が[]なので初回レンダリングで呼び出し
   return (
     <BrowserRouter>
       <Routes>

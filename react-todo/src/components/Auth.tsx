@@ -57,7 +57,7 @@ export const Auth = () => {
             type="password"
             placeholder="Password"
             onChange={(e) => setPw(e.target.value)}
-            value={email}
+            value={pw}
             />
         </div>
         <div className="flex justify-center my-2">
