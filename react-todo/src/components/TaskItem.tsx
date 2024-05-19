@@ -24,7 +24,7 @@ const TaskItemMemo: FC<Omit<Task, 'created_at' | 'updated_at'>> = ({
                     }}
                 />
                 <TrashIcon
-                    className="h-5 w-5 text-blue-50 cursor-pointer"
+                    className="h-5 w-5 text-blue-500 cursor-pointer"
                     onClick={() => {
                         deleteTaskMutation.mutate(id)
                     }}

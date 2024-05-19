@@ -20,9 +20,9 @@ export const useQueryTasks = () => {
         onError: (err: any) => {
             if (err.response.data.message) {
                 switchErrorHandling(err.response.data.message)
-            } else [
+            } else {
                 switchErrorHandling(err.response.data)
-            ]
+            }
         },
     })
 }

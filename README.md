@@ -236,3 +236,4 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
     - 今回のコードのupdate, deleteを例にかく
     - https://tanstack.com/query/v4/docs/framework/react/reference/useMutation
     - 公式サイトから第二引数の呼び方探す
+- react dev tool
