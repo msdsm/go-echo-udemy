@@ -223,3 +223,16 @@ e.Use(middleware.CSRFWithConfig(middleware.CSRFConfig{
 
 ### axios
 - クライアントからapiたたくのに便利
+
+### todo
+- zustand詳しくのせる
+- tanstack query, react queryについて詳しくのせる
+- use系すべて(useStateから)のせる
+- axiosもう少し詳しく
+- Omit
+- mutationのres, variablesの謎
+  - useMutationの第一引数の関数の引数がvariables
+  - 第一引数の関数の引数を第二引数で与える各レスポンスに対する処理で使えて便利という話をうまく言語化してまとめる
+    - 今回のコードのupdate, deleteを例にかく
+    - https://tanstack.com/query/v4/docs/framework/react/reference/useMutation
+    - 公式サイトから第二引数の呼び方探す
